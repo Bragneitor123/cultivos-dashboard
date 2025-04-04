@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `parcela` ADD COLUMN `latitud` DOUBLE NOT NULL DEFAULT 0,
+    ADD COLUMN `longitud` DOUBLE NOT NULL DEFAULT 0;

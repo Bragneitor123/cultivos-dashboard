@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Parcela {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  ubicacion   String
+  responsable String
+  tipoCultivo String
+  ultimoRiego DateTime
+  sensorId    Int     @unique
+  sensor      Sensor  @relation(fields: [sensorId], references: [id])
+  latitud     Float   @default(0)
+  longitud    Float   @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Cultivo {
+  id        Int      @id @default(autoincrement())
+  sensorId  Int      @unique
+  sensor    Sensor   @relation(fields: [sensorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sensor {
+  id          Int      @id @default(autoincrement())
+  humedad     Float
+  temperatura Float
+  lluvia      Float
+  sol         Float
+  historial   SensorHistory[]
+  parcela     Parcela?  // Relación uno a uno
+  cultivo     Cultivo?  // Relación uno a uno
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SensorHistory {
+  id          Int      @id @default(autoincrement())
+  sensorId    Int
+  sensor      Sensor   @relation(fields: [sensorId], references: [id])
+  humedad     Float
+  temperatura Float
+  lluvia      Float
+  sol         Float
+  timestamp   DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}   
